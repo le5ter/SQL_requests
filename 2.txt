@@ -1,0 +1,87 @@
+Lab 2 - Restricting and Sorting Data
+
+• Отделу кадров требуется список сотрудников (фамилия, имя), получающих зарплату более 12000$.
+    SELECT first_name || ' ' || last_name "Name & Surname", salary
+    FROM hr.employees
+    WHERE salary > 12000;
+
+• Отделу кадров требуется узнать фамилию и подразделение у сотрудника с кодом 176.
+    SELECT last_name, department_id
+    FROM hr.employees
+    WHERE employee_id = 176;
+
+• Отделу кадров требуется список сотрудников (фамилия, имя, зарплата, код департамента), не имеющих среднюю зарплату. Средняя зарплата находится в диапазоне от 5 до 12 тысяч. Используйте условие BETWEEN.
+    SELECT last_name, first_name, department_id, salary
+    FROM hr.employees
+    WHERE salary NOT BETWEEN 5000 and 12000;
+
+• Создайте отчет, показывающий фамилию сотрудника, код должности, дату принятия на работу у сотрудников с фамилиями Matos и Taylor. Используйте условие IN.
+    SELECT last_name, job_id, hire_date
+    FROM hr.employees
+    WHERE last_name IN ('Matos', 'Taylor');
+
+• Создайте отчет, показывающий фамилию сотрудника и код департамента у всех сотрудников из 20 и 50 департамента. Используйте условие IN.
+    SELECT last_name, department_id
+    FROM hr.employees
+    WHERE department_id IN (20, 50);
+
+• Отделу кадров требуется список сотрудников (фамилия, имя, зарплата, код департамента), имеющих среднюю зарплату. Средняя зарплата находится в диапазоне от 5 до 12 тысяч. Используйте условие BETWEEN. Назовите колонки Employee, Monthly Salary
+    SELECT last_name || ' ' || first_name "Employee", department_id, salary "Monthly salary"
+    FROM hr.employees
+    WHERE salary BETWEEN 5000 AND 12000
+
+• Отделу кадров требуется список сотрудников (Фамилия, код), которые были приняты в 2002 году.
+    SELECT last_name, employee_id, hire_date
+    FROM hr.employees
+    WHERE hire_date BETWEEN '2002.01.01' AND '2002.12.31'
+
+• Создайте отчет для отображения фамилии и кода должности у сотрудников без начальника.
+    SELECT last_name, job_id
+    FROM hr.employees
+    WHERE manager_id IS null
+
+• Отобразите всех сотрудников (имя, фамилия, зарплата, величина надбавки), имеющих надбавку. Полученный список отсортируйте по убыванию зарплаты и надбавки.
+    SELECT last_name, first_name, salary, coalesce(commission_pct, 0)
+    FROM hr.employees
+    ORDER BY salary DESC, commission_pct;
+
+• Отобразите всех сотрудников (имя, фамилия, зарплата), у которых зарплата больше 10000.
+    SELECT last_name, first_name, salary
+    FROM hr.employees
+    WHERE salary > 10000
+
+• Отобразите всех сотрудников (код, имя, фамилия, зарплата, подразделение), работающих в подчинении у сотрудника  с кодом 103; 201; 124. Результат сортировать по фамилии.
+    SELECT last_name, first_name, employee_id, department_id, manager_id, salary
+    FROM hr.employees
+    WHERE manager_id IN (103, 201, 124)
+    ORDER BY last_name
+
+• Отобразите всех сотрудников (код, имя, фамилия), в фамилии которых третья буква А.
+    SELECT last_name, first_name, employee_id
+    FROM hr.employees
+    WHERE last_name LIKE '__a%';
+
+• Отобразите всех сотрудников (код, имя, фамилия), в фамилии которых содержатся буквы А,Е.
+    SELECT last_name, first_name, employee_id
+    FROM hr.employees
+    WHERE last_name LIKE ANY(ARRAY['a%e%', 'e%a%', 'A%e%', 'E%a%']);
+
+• Отобразите всех сотрудников (код, имя, фамилия, зарплата), имеющих должность SA_REP и ST_CLERK. Исключите также сотрудников с зарплатами 2500, 3500, 7000.
+    SELECT last_name, first_name, employee_id, job_id, salary
+    FROM hr.employees
+    WHERE job_id IN ('SA_REP', 'ST_CLERK') AND salary NOT IN (2500, 3500, 7000)
+
+• Отобразите всех сотрудников (код, имя, фамилия, зарплата), у которых надбавка 0.20.
+    SELECT last_name, first_name, employee_id, commission_pct, salary
+    FROM hr.employees
+    WHERE commission_pct = 0.20
+
+• Создайте отчет, отображения фамилии, кода должности, зарплаты, надбавки, зарплаты с учетом надбавки у сотрудников, имеющих надбавку.
+    SELECT last_name, job_id,
+    commission_pct, salary, coalesce(salary*(1+commission_pct), salary) "New salary"
+    FROM hr.employees
+
+• Напишите запрос, отражающих всех сотрудников, код занимаемой должности которых начинается на «SA_». В запросе отразите код сотрудника, его фамилию, код занимаемой должности.
+    SELECT last_name, employee_id, job_id
+    FROM hr.employees
+    WHERE job_id LIKE E'SA\_%'
