@@ -1,0 +1,41 @@
+Lab1 - Retrieving Data Using the SQL SELECT Statement
+
+• Отделу кадров требуется список сотрудников: фамилия, код должности, дата приема на работу и код сотрудника. Дату приема на работe назовите STARTDATE.
+    SELECT last_name, job_id, hire_date "STARTDATE", employee_id
+    FROM hr.employees
+
+• Отделу кадров требуется список существующих кодов должностей из таблицы EMPLOYEES. Список не должен содержать одинаковых записей.
+    SELECT DISTINCT job_id
+    FROM hr.employees
+
+• Отделу кадров требуется список сотрудников: фамилия, код должности, дата приема на работу и код сотрудника. Дату приема на работу назовите «Hire Date». Код сотрудника назовите «Emp #». Фамилию назовите «Employee». Код должности назовите «Job».
+    SELECT last_name "Employee", job_id "Job", hire_date "Hire Date", employee_id "Emp #"
+    FROM hr.employees
+
+• Отдел кадров запросил отчет по сотрудникам (фамилия) и занимаемым ими должностям. Вывод информации одной колонкой, названной «Employee and Title». Фамилия и должность разделяются запятой с пробелом.
+    SELECT last_name || ', ' || job_id "Employee and Title"
+    FROM hr.employees
+
+• Отдел кадров запросил отчет по сотрудникам (фамилия), получаемой зарплате, зарплате в следующем году. Зарплата следующего года по условиям индексации увеличивается на 15%. Фамилию сотрудника назовите «Employee», зарплату следующего года – «Next Year Salary».
+    SELECT last_name "Employee", salary, salary*1.15 "Next Year Salary"
+    FROM hr.employees
+
+• Отдел кадров запросил информацию о заработке сотрудников компании за год. Зарплата у сотрудников в течении года не менялась.
+    SELECT last_name, salary*12 "Year salary"
+    FROM hr.employees
+
+• Отдел кадров запросил информацию о заработке сотрудников компании за год. Зарплата у сотрудников в течении года не менялась. Требуется вывести эту информацию одной колонкой, названной «Total salary» в виде предложения «employee for the year received 200», где вместо employee – фамилия сотрудника, вместо 200 – заработок за год. Также, отдельной колонкой вывести зарплату с учетом персональной надбавки и назвать колонку «Premium salary».
+    SELECT last_name || ' for the year received ' ||  salary*12 "Total salary",
+	  coalesce(salary*commission_pct, salary) "Premium salary"
+    FROM hr.employees
+
+• Отдел кадров запросил информацию о зарплате сотрудников. Информация должна быть выведена одной колонкой по примеру «Steven’s salary is 2000».
+    SELECT last_name || E'\'s salary is ' || salary
+    FROM hr.employees
+
+• Отдел кадров запросил решил составить телефонный справочник сотрудников. Информация должна быть выведена одной колонкой по примеру «Steven King has phone number 234234».
+    SELECT first_name || ' ' || last_name || ' has phone number ' || phone_number
+    FROM hr.employees
+
+• Отделу кадров требуется список существующих кодов подразделений из таблицы EMPLOYEES. Список не должен содержать одинаковых записей.
+    SELECT DISTINCT department_id FROM hr.employees
