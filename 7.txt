@@ -1,0 +1,47 @@
+Lab 7 – Using set operators
+
+• Напишите запрос, отображающий список подразделений, не содержащих сотрудников с кодом должности ST_CLERK. Используйте конструкцию MINUS.
+    SELECT department_id
+    FROM employees
+    EXCEPT
+    SELECT department_id
+    FROM employees
+    WHERE job_id = 'ST_CLERK'
+
+• Напишите запрос, отображающий список стран, в которых не расположены подразделения.
+    SELECT country_name
+    FROM countries
+    EXCEPT
+    SELECT country_name
+    FROM countries cc
+    JOIN locations l
+    ON cc.country_id = l.country_id
+    JOIN departments d
+    ON l.location_id = d.location_id
+    WHERE department_id IS NOT null
+
+• Отобразите сотрудников, работающих в подразделениях 10, 20, 50. Используйте конструкцию UNION для объединения сотрудников из каждого подразделения.
+    SELECT employee_id, last_name, department_id
+    FROM employees
+    WHERE department_id = 10
+    UNION
+    SELECT employee_id, last_name, department_id
+    FROM employees
+    WHERE department_id = 20
+    UNION
+    SELECT employee_id, last_name, department_id
+    FROM employees
+    WHERE department_id = 50
+    ORDER BY department_id
+
+• Напишите запрос, отображающий код сотрудника и код занимаемой должности для тех сотрудников, которые меняли работу, но вернулись к своей первоначальной должности. Используйте конструкцию INTERSECT.
+    SELECT employee_id, job_id
+    FROM employees e
+    WHERE job_id = (SELECT job_id FROM job_history j WHERE start_date =
+		     (SELECT MIN(start_date) FROM job_history WHERE e.employee_id = j.employee_id))
+    -----------------------------------------------------------------------------------------
+    SELECT employee_id, job_id
+    FROM job_history
+    INTERSECT
+    SELECT employee_id, job_id
+    FROM employees
