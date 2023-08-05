@@ -1,0 +1,46 @@
+Lab 4 - Reporting Aggregated Data Using the Group Functions
+
+• Напишите запрос, показывающий максимальную, минимальную, среднюю, а также сумму всех зарплат в таблице EMPLOYEES. Одним запросом. Колонки назвать соответственно Maximum, Minimum, Average, Sum. Результат округлить до целого числа.
+    SELECT round(MAX(salary)) "Maximum", round(MIN(salary)) "Minimum",
+    round(AVG(salary)) "Avarage", round(SUM(salary)) "Sum"
+    FROM employees
+
+• Напишите запрос, показывающий максимальную, минимальную, среднюю, а также сумму всех зарплат в таблице EMPLOYEES для каждой должности. Одним запросом. Колонки назвать соответственно Maximum, Minimum, Average, Sum. Результат округлить до целого числа.
+    SELECT job_id, round(MAX(salary)) "Maximum", round(MIN(salary)) "Minimum", round(AVG(salary)) "Avarage", round(SUM(salary)) "Sum"
+    FROM employees
+    GROUP BY job_id
+    ORDER BY job_id
+
+• Выведете список должностей, с количеством человек, занимаемых эту должность.
+    SELECT job_id, COUNT(*)
+    FROM employees
+    GROUP BY job_id
+    ORDER BY job_id
+
+• Выведете количество разных руководителей. Назовите колонку «Number Of Manager».
+    SELECT COUNT(DISTINCT manager_id) "Number Of Manager"
+    FROM employees
+
+• Получите разницу между самой большой и самой маленькой зарплатой. Колонку назовите DIFFERENCE.
+    SELECT MAX(salary)-MIN(salary) "DIFFERENCE"
+    FROM employees
+
+• Для каждого руководителя покажите минимальную зарплату в группе его подчиненных.
+    SELECT manager_id, MIN(salary)
+    FROM employees
+    GROUP BY manager_id
+    ORDER BY manager_id
+
+• Для каждого руководителя покажите минимальную зарплату в группе его подчиненных, начиная от 6000$. Исключите сотрудников, у которых нет руководителя. Полученные группу отсортируйте по убыванию.
+    SELECT manager_id, MIN(salary)
+    FROM employees
+    WHERE manager_id is not null
+    GROUP BY manager_id
+    HAVING MIN(salary) > 6000
+    ORDER BY manager_id
+
+• Для каждого руководителя покажите среднюю зарплату в группе его подчиненных.
+    SELECT manager_id, round(AVG(salary))
+    FROM employees
+    GROUP BY manager_id
+    ORDER BY manager_id
