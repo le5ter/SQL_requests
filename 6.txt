@@ -1,6 +1,6 @@
 Lab 6 – Using queries to solve queries
 
-• Напишите запрос, показывающий фамилию и дату принятия на работу у сотрудников, работающих с сотрудником  Zlotkey, исключая самого Zlotkey. Используйте подзапрос, для получения кода подразделения у сотрудника Zlotkey.
+• Напишите запрос, показывающий фамилию и дату принятия на работу у сотрудников, работающих с сотрудником  Taylor, исключая самого Taylor. Используйте подзапрос, для получения кода подразделения у сотрудника Taylor.
     SELECT last_name, hire_date
     FROM employees
     WHERE department_id = ANY (SELECT department_id FROM employees WHERE last_name = 'Taylor')
