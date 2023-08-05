@@ -1,0 +1,55 @@
+Lab 6 – Using queries to solve queries
+
+• Напишите запрос, показывающий фамилию и дату принятия на работу у сотрудников, работающих с сотрудником  Zlotkey, исключая самого Zlotkey. Используйте подзапрос, для получения кода подразделения у сотрудника Zlotkey.
+    SELECT last_name, hire_date
+    FROM employees
+    WHERE department_id = ANY (SELECT department_id FROM employees WHERE last_name = 'Taylor')
+    AND last_name != 'Taylor'
+
+• Напишите запрос, показывающий всех сотрудников, получающих заработную плату выше средней. Полученный результат должен быть отсортирован по возрастанию заработной платы.
+    SELECT employee_id, last_name, salary
+    FROM employees
+    WHERE salary > (SELECT AVG(salary) FROM employees)
+    GROUP BY (employee_id)
+    ORDER BY salary
+
+• Для каждого сотрудника покажите название отдела, в котором он работает. Используйте подзапрос для получения названия отдела.
+    SELECT employee_id, last_name, department_id,
+    (SELECT department_name FROM departments d WHERE e.department_id = d.department_id)
+    FROM employees e
+
+• Напишите запрос, показывающий всех сотрудников, находящихся в подчинении у сотрудника с фамилией King.
+    SELECT employee_id, last_name, manager_id
+    FROM employees
+    WHERE manager_id = ANY (SELECT manager_id FROM employees WHERE last_name = 'King')
+
+• Напишите запрос, показывающий всех сотрудников, работающих в отделе Executive.
+    SELECT employee_id, last_name, department_id
+    FROM employees
+    WHERE department_id = (SELECT department_id FROM departments WHERE department_name = 'Executive')
+
+• Напишите запрос, показывающий всех сотрудников компании, получающих заработную плату выше средней и работающих в подразделении, у которого в названии содержится буква “u”.
+    SELECT employee_id, last_name, salary, department_id
+    FROM employees
+    WHERE salary > (SELECT AVG(salary) FROM employees)
+    AND department_id = ANY (SELECT department_id FROM departments WHERE department_name LIKE '%u%')
+
+• Для каждого подразделения покажите минимальную зарплату, среди сотрудников, получающих зарплату выше средней.
+    SELECT MIN(salary), department_id
+    FROM employees
+    WHERE salary > (SELECT AVG(salary) FROM employees)
+    GROUP BY (department_id)
+    ORDER BY department_id
+
+• Напишите запрос, отображающий все подразделения, в которых работают сотрудники с кодом занимаемой должности SA_REP. Код подразделения получите подзапросом.
+    SELECT department_id
+    FROM employees
+    WHERE department_id = ANY (SELECT department_id FROM employees WHERE job_id = 'SA_REP')
+    GROUP BY department_id
+
+• Для запроса из п.8 исключите сотрудников, у которых код подразделения не указан.
+    SELECT department_id
+    FROM employees
+    WHERE department_id = ANY (SELECT department_id FROM employees WHERE job_id = 'SA_REP')
+    AND department_id IS NOT null
+    GROUP BY department_id
