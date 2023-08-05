@@ -1,0 +1,81 @@
+Lab 3 - Using Single-Row Functions to Customize Output
+
+• Получите текущую дату, поле назовите Date.
+    SELECT now()::date "Date"
+
+• Отделу кадров требуется отчет, отображающий код сотрудника, фамилию, зарплату, зарплату умноженную на 1.155 (15.5%). Значение округлите до целого числа, назовите «New Salary».
+    SELECT employee_id, last_name, salary, round(salary*1.155) "New Salary"
+    FROM hr.employees
+
+• Напишите запрос, выводящий всех сотрудников вторая буква фамилии которых – а. Используйте функцию SUBSTR|SUBSTRING.
+    SELECT first_name, last_name
+    FROM hr.employees
+    WHERE substring(last_name from 2 for 1) = 'a'
+
+• Отделу кадров требуется отчет, отображающий код сотрудника, фамилию, зарплату, зарплату умноженную на 1.155 (15.5%), разницу между новой и старой зарплатой. Значения округлите до целого числа, назовите «New Salary», «Increase».
+    SELECT employee_id, last_name, salary, salary*1.155 "New Salary", round(salary*1.155 - salary) "Increase"
+    FROM hr.employees
+
+• Напишите запрос, показывающий фамилию, фамилию с большой буквы (используйте функцию INITCAP), длину фамилии в символах у всех сотрудников, фамилии которых начинаются на J, M, A. Результат отсортируйте возрастанию.
+    SELECT last_name, initcap(last_name) "Cap", length(last_name) "Length_1"
+    FROM hr.employees
+    WHERE substring(last_name from 1 for 1) in ('J', 'M', 'A')
+    ORDER BY length(last_name)
+
+• Отдел кадров требует список сотрудников (фамилия, имя), количество отработанных месяцев в компании. Используйте функции ROUND, AGE, EXTRACT, NOW.
+    SELECT last_name, first_name, now()::date, hire_date,
+    (extract(YEAR from now()::date) - extract(YEAR from hire_date)) * 12 + extract(MONTH from now()::date) - extract(MONTH from hire_date)
+    FROM hr.employees
+
+• Создайте отчет, выводящий предложение «<emp last name> earns <salary> monthly, but wants <3*salary>». Назовите колонку Dream Salary. Используйте функцию FORMAT.
+    SELECT format('%s earns %s monthly, but wants %s', last_name, salary, salary*3) "Dream salary"
+    FROM hr.employees
+
+• Отдел кадров требует список сотрудников (фамилия, имя), получаемую зарплату. Зарплата должна быть длинной 15 символов. Недостающую длину заполнить $ в начале. Используйте функции LPAD.
+    SELECT last_name, first_name, lpad(salary::varchar(255), 15, '$')
+    FROM hr.employees
+
+• Создайте отчет, выводящий предложение «<emp last name in upper case> earns <salary> monthly, but wants <3*salary>». Назовите колонку Dream Salary. Используйте функцию FORMAT, UPPER.
+    SELECT format('%s earns %s monthly, but wants %s', upper(last_name), salary, salary*3) "Dream salary"
+    FROM hr.employees
+
+• Отдел кадров требует список сотрудников (фамилия, имя), количество отработанных месяцев в компании. Фамилия должна быть выведена заглавными буквами, а имя нет. Используйте функции ROUND, AGE, EXTRACT, NOW, UPPER, LOWER.
+    SELECT upper(last_name), lower(first_name),
+    (extract(YEAR from now()::date) - extract(YEAR from hire_date)) * 12 + extract(MONTH from now()::date) - extract(MONTH from hire_date)
+    FROM hr.employees
+
+• Отдел кадров требует список сотрудников (фамилия, имя), получаемую зарплату. Зарплата должна быть длинной 10 символов. Недостающую длину заполнить 0 в конце. Используйте функции RPAD.
+    SELECT last_name, first_name, rpad(salary::varchar(255), 10, '0')
+    FROM hr.employees
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников, длина фамилии которых больше трех символов. Используйте функцию SUBSTR|SUBSTRING.
+    SELECT *
+    FROM hr.employees
+    WHERE substring(last_name from 3) != ''
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников, длина фамилии которых больше трех символов. Используйте функцию LENGTH.
+    SELECT *
+    FROM hr.employees
+    WHERE length(last_name) > 3
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников. Если фамилия начинается или заканчивается на букву K – выводить фамилию без этой буквы. Используйте функцию TRIM.
+    SELECT employee_id, first_name, trim(both 'Kk' from last_name), email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
+    FROM hr.employees
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников, в фамилии которых есть буквосочетание «in». Используйте функцию POSITION.
+    SELECT *
+    FROM hr.employees
+    WHERE position('in' in last_name) > 0
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников. Если в фамилии есть буквосочетание «in» - замените его на «pm». Используйте функцию REPLACE.
+    SELECT employee_id, first_name, replace(last_name, 'in', 'pm'), email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
+    FROM hr.employees
+
+• Напишите запрос, выводящий всю информацию из таблицы сотрудников, в фамилии которых вторая буква - «i». Используйте функцию POSITION.
+    SELECT *
+    FROM hr.employees
+    WHERE strpos(last_name, 'i') = 2
+
+• Напишите запрос, выводящий всю информацию из таблицы EMPLOYEES одной колонкой. Назовите ее «THE OUTPUT». Используйте функцию CONCAT_WS.
+    SELECT concat_ws(' ', employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id)
+    FROM hr.employees
