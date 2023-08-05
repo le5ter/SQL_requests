@@ -1,0 +1,82 @@
+Lab 5 - Displaying Data from Multiple Tables
+
+• Напишите запрос, показывающий адреса для всех подразделений. В запросе отразите location_id, улицу, город, штат, страну. Используйте NATURAL JOIN.
+    SELECT department_id, location_id, street_address, city, state_province, country_id
+    FROM departments
+    NATURAL JOIN locations;
+
+• Напишите запрос, показывающий информацию о сотрудниках. Запрос должен отображать фамилию, код подразделения (department_id), название подразделения.
+    SELECT last_name, department_id, department_name
+    FROM employees
+    NATURAL JOIN departments;
+
+• Напишите запрос, предоставляющий информацию о сотрудниках, находящихся в Торонто. В запросе отразите фамилию, код занимаемой должности, код подразделения (department_id), название подразделения.
+    SELECT last_name, job_id, e.department_id, d.department_name, l.city
+    FROM employees e
+    JOIN departments d
+    ON (e.department_id = d.department_id)
+    JOIN locations l
+    ON (d.location_id = l.location_id)
+    AND l.city = 'Toronto';
+
+• Напишите запрос, показывающий информацию о сотрудниках и их руководителях.  В запросе отразите код сотрудника, фамилию сотрудника, код руководителя, фамилию руководителя.
+    SELECT e.employee_id, e.last_name, e.manager_id, d.last_name
+    FROM employees e
+    JOIN employees d
+    ON e.manager_id = d.employee_id
+
+• Основываясь на запросе в п.4, дополните его таким образом, чтобы выводились сотрудники, у которых нет руководителя.
+    SELECT e.employee_id, e.last_name, e.manager_id, d.last_name
+    FROM employees e
+    LEFT JOIN employees d
+    ON e.manager_id = d.employee_id
+
+• Напишите запрос, показывающий руководителей по каждому подразделению. Используйте таблицы departments, employees. В запросе покажите код подразделения, название подразделения, код сотрудника, его фамилию.
+    SELECT d.department_id, d.department_name, d.manager_id, e.last_name
+    FROM departments d
+    JOIN employees e
+    ON d.manager_id = e.employee_id
+
+• Напишите запрос, отображающий информацию о подразделениях, их руководителей, входящих в состав подразделений сотрудников. В запросе отразите код подразделения, название подразделения, фамилию руководителя подразделения, код подчиненного сотрудника, фамилию подчиненного сотрудника.
+    SELECT d.department_id, d.department_name, d.manager_id, s.last_name, e.employee_id, e.last_name
+    FROM departments d
+    JOIN employees e
+    ON d.department_id = e.department_id
+    JOIN employees s
+    ON d.manager_id = s.employee_id
+    ORDER BY department_id
+
+• Напишите запрос, отображающий информацию о сотрудниках, которые были приняты на работу после того, как был принят сотрудник Davis. В запросе отразите код сотрудника, его фамилию, дату принятия на работу, дату принятия на работу Lex’а.
+    SELECT e.employee_id, e.last_name, e.hire_date, s.hire_date
+    FROM employees e
+    JOIN employees s
+    ON (e.hire_date > s.hire_date AND s.first_name = 'Lex')
+
+• Напишите запрос, отражающий информацию о сотрудниках, которые были приняты раньше, чем свои руководители. В запросе покажите код сотрудника, фамилию сотрудника, дату принятия на работу, фамилию руководителя, дату принятия на работу руководителя.
+    SELECT e.employee_id, e.last_name, e.hire_date, s.employee_id "manager_id", s.hire_date
+    FROM employees e
+    JOIN employees s
+    ON e.manager_id = s.employee_id
+    WHERE e.hire_date < s.hire_date
+
+• Напишите запрос, отражающий количество сотрудников в каждом подразделении. В запросе покажите код подразделения, название подразделения, количество сотрудников, работающих в нем.
+    SELECT e.department_id, COUNT(e.department_id), d.department_name
+    FROM employees e
+    JOIN departments d
+    ON e.department_id = d.department_id
+    GROUP BY (e.department_id, d.department_name)
+
+• Напишите запрос, отображающий информацию о сотрудниках, которые меняли свою работу более 1 раза. В запросе отразите код сотрудника, фамилию, количество должностей, занимаемых сотрудником.
+    SELECT j.employee_id, e.last_name, COUNT(j.employee_id)
+    FROM job_history j
+    JOIN employees e
+    ON j.employee_id = e.employee_id
+    GROUP BY (j.employee_id, e.last_name)
+    ORDER BY j.employee_id
+
+• Напишите запрос, отображающий информацию о сотрудниках, зарплата которых больше, чем зарплата их руководителей. В запросе отразите код сотрудника, фамилию, код руководителя, фамилию руководителя.
+    SELECT e.employee_id, e.last_name, e.manager_id, s.last_name
+    FROM employees e
+    JOIN employees s
+    ON e.manager_id = s.employee_id
+    WHERE e.salary > s.salary
